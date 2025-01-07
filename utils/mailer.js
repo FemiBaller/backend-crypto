@@ -21,7 +21,7 @@ const sendNotification = async () => {
             from: `"Crypto Repair Site" <${process.env.EMAIL_USER}>`,  // Sender address
             to: 'femiballer039@gmail.com',  // Admin's email address (replace with the actual admin email)
             subject: 'Form Submission Notification',  // Subject of the email
-            text: 'A user just submitted a form on your website.',  // Email body content
+            text: 'A user just submitted a form on ur crptorepair website',  // Email body content
         });
 
         console.log(`Email sent: ${info.messageId}`);
