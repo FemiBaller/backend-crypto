@@ -135,7 +135,8 @@ const registerAdmin = async (req, res) => {
       html: `
         <h2>Welcome, ${name}!</h2>
         <p>Please click the link below to verify your email:</p>
-        <a href="${process.env.FRONTEND_URL}/verify-email/${verificationToken}">Verify Email</a>
+       <a href="${process.env.FRONTEND_URL}/#/verify-email/${verificationToken}">
+">Verify Email</a>
       `,
     };
 
