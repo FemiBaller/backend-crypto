@@ -44,13 +44,10 @@ const sendResetPasswordEmail = async (email) => {
   if (!admin) {
     throw new Error("Admin not found");
   }
-
-  // Generate a reset token with a 1-hour expiration
+  
   const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    // Generate a reset URL with the token included
   const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-
-
+  
   const transporter = nodemailer.createTransport({
     service: "Gmail", // or your preferred email provider
     auth: {
@@ -91,11 +88,7 @@ const registerAdmin = async (req, res) => {
 
     // Validate password strength
     if (!validatePassword(password)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Password must be at least 8 characters long and contain at least one number",
-      });
+      return res.status(400).json({ success: false, message: "Password must be at least 8 characters long and contain at least one number" });
     }
 
     // Hash the password
@@ -113,11 +106,7 @@ const registerAdmin = async (req, res) => {
     const savedAdmin = await newAdmin.save();
 
     // Generate a verification token
-    const verificationToken = jwt.sign(
-      { id: savedAdmin._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    const verificationToken = jwt.sign({ id: savedAdmin._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
     // Send verification email
     const transporter = nodemailer.createTransport({
@@ -135,8 +124,8 @@ const registerAdmin = async (req, res) => {
       html: `
         <h2>Welcome, ${name}!</h2>
         <p>Please click the link below to verify your email:</p>
-       <a href="${process.env.FRONTEND_URL}/#/verify-email/${verificationToken}">
-">Verify Email</a>
+        <a href="${process.env.FRONTEND_URL}">Verify Email</a>
+
       `,
     };
 
@@ -144,12 +133,11 @@ const registerAdmin = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message:
-        "Account created. A verification email has been sent to your email address.",
+      message: "Account created. A verification email has been sent to your email address.",
     });
   } catch (error) {
-    console.error("Error registering admin:", error);
-    res.status(500).json({ success: false, message: "Server error while registering admin" });
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -174,7 +162,7 @@ const verifyEmail = async (req, res) => {
     }
 
     // Update the verified status
-    admin.verified = true; // Set verified status to true
+    admin.verified = true;
     await admin.save(); // Save changes to the database
 
     res.status(200).json({ success: true, message: "Email verified successfully" });
@@ -235,16 +223,10 @@ const changePassword = async (req, res) => {
   try {
     // Validate input
     if (newPassword !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ success: false, message: "New password and confirm password do not match" });
+      return res.status(400).json({ success: false, message: "New password and confirm password do not match" });
     }
     if (!validatePassword(newPassword)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Password must be at least 8 characters long and contain at least one number",
-      });
+      return res.status(400).json({ success: false, message: "Password must be at least 8 characters long and contain at least one number" });
     }
 
     // Find admin by email
@@ -267,17 +249,11 @@ const changePassword = async (req, res) => {
 
     res.json({ success: true, message: "Password changed successfully" });
   } catch (error) {
-      console.error("Error while changing password:", error);
+    console.log(error);
     res.status(500).json({ success: false, message: "Error changing password" });
   }
 };
 
-export {
-  loginAdmin,
-  registerAdmin,
-  changePassword,
-  verifyEmail,
-  authenticate,
-  sendResetPasswordEmail,
-  loginLimiter
-};
+        // <a href="${process.env.FRONTEND_URL}/verify-email/${verificationToken}">Verify Email</a>
+        export { loginAdmin, registerAdmin, changePassword, verifyEmail, authenticate, sendResetPasswordEmail, loginLimiter };
+
