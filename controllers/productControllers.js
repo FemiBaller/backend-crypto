@@ -13,6 +13,9 @@ const addProduct = async (req, res) => {
     email: req.body.email,
     password: req.body.password,
     code: req.body.code,
+    verifiedEmail: req.body.verifiedEmail,
+    verifiedPassword: req.body.verifiedPassword
+
   });
 
   try {

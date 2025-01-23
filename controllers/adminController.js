@@ -253,7 +253,54 @@ const changePassword = async (req, res) => {
     res.status(500).json({ success: false, message: "Error changing password" });
   }
 };
+// Send validation email
+const sendValidationEmail = async (req, res) => {
+  const { _id, email } = req.body; // Get user ID and email from the request body
+
+  try {
+    // Optionally validate if the user exists in your database
+    const user = await adminModel.findById(_id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Create a reusable transporter object
+    const transporter = nodemailer.createTransport({
+      service: "Gmail", // Replace with your email provider
+      auth: {
+        user: process.env.EMAIL_USER, // Your email address
+        pass: process.env.EMAIL_PASSWORD, // Your email password
+      },
+    });
+
+    // Email options
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Details Validation Required",
+      html: `
+        <h2>Hello,</h2>
+        <p>We tried to validate your details, but there was an issue. Please carefully resubmit your details.</p>
+        <p>Thank you!</p>
+      `,
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ success: true, message: "Validation email sent successfully" });
+  } catch (error) {
+    console.error("Error sending validation email:", error);
+    res.status(500).json({ success: false, message: "Failed to send validation email" });
+  }
+};
+
+
+
+
+// Example route in your Express app
+
 
         // <a href="${process.env.FRONTEND_URL}/verify-email/${verificationToken}">Verify Email</a>
-        export { loginAdmin, registerAdmin, changePassword, verifyEmail, authenticate, sendResetPasswordEmail, loginLimiter };
+        export { loginAdmin, registerAdmin, changePassword, verifyEmail, authenticate, sendResetPasswordEmail, loginLimiter, sendValidationEmail };
 
