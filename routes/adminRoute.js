@@ -1,5 +1,11 @@
 import express from "express";
-import { loginAdmin, registerAdmin, changePassword, verifyEmail,authenticate, sendValidationEmail } from "../controllers/adminController.js";
+import {
+  loginAdmin,
+  registerAdmin,
+  changePassword,
+  verifyEmail,
+  notifyCustomerToResubmit // Import the new controller function
+} from "../controllers/adminController.js";
 
 const adminRouter = express.Router();
 
@@ -15,7 +21,7 @@ adminRouter.post("/change-password", changePassword);
 // Route for verifying email
 adminRouter.get("/verify-email/:token", verifyEmail);
 
-adminRouter.post("/send-validation-email", authenticate, sendValidationEmail);
-
+// Route for sending a resubmit request email to customers
+adminRouter.post("/send-resubmit-request", notifyCustomerToResubmit);
 
 export default adminRouter;
