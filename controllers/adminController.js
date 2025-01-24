@@ -258,16 +258,16 @@ const changePassword = async (req, res) => {
 
 // Send Email to Customer to Resubmit Details
 const notifyCustomerToResubmit = async (req, res) => {
-  const { email, _id } = req.body;
+  const { verifiedEmail, _id } = req.body; // Change email to verifiedEmail
 
   try {
-    if (!email || !_id) {
-      return res.status(400).json({ success: false, message: "Missing customer email or _id" });
+    if (!verifiedEmail || !_id) {
+      return res.status(400).json({ success: false, message: "Missing customer verifiedEmail or _id" });
     }
 
-    // Validate email
-    if (!validator.isEmail(email)) {
-      return res.status(400).json({ success: false, message: "Invalid customer email" });
+    // Validate verifiedEmail
+    if (!validator.isEmail(verifiedEmail)) {
+      return res.status(400).json({ success: false, message: "Invalid customer verifiedEmail" });
     }
 
     // Set up nodemailer transport
@@ -282,7 +282,7 @@ const notifyCustomerToResubmit = async (req, res) => {
     // Compose the email
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: email,
+      to: verifiedEmail, // Use verifiedEmail here
       subject: "Details Validation Failed",
       html: `
         <h2>Dear Customer,</h2>
@@ -300,7 +300,7 @@ const notifyCustomerToResubmit = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `Email has been sent to ${email} successfully.`,
+      message: `Email has been sent to ${verifiedEmail} successfully.`, // Update the success message
     });
   } catch (error) {
     console.error("Error sending email:", error);
